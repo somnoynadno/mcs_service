@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  mcs_api:
+    build: .
+    container_name: "mcs_service"
+    env_file:
+      - .env
+    ports:
+      - "9090:9090"
+    restart: "always"
+    network_mode: "host"
