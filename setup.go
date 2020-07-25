@@ -12,6 +12,31 @@ import (
 func CreateDefaults() {
 	createDefaultRolesAndUsers()
 	createDefaultTaskTypes()
+	createDefaultSectionTypes()
+}
+
+func createDefaultSectionTypes() {
+	for _, st := range entities.DefaultSectionTypes {
+		sectionType := entities.SectionType{}
+		err := db.GetDB().Where("name = ?", st).First(&sectionType).Error
+
+		if err != nil {
+			if err == gorm.ErrRecordNotFound {
+				sectionType.Name = st
+
+				err := db.GetDB().Create(&sectionType).Error
+				if err != nil {
+					panic(err)
+				}
+
+				log.Info("Section type '" + st + "' created successfully")
+			} else {
+				panic(err)
+			}
+		} else {
+			log.Info("Section type '" + st + "' already exists")
+		}
+	}
 }
 
 func createDefaultTaskTypes() {

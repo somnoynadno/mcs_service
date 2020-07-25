@@ -10,9 +10,9 @@ import (
 	"net/http"
 )
 
-var SectionCreate = func(w http.ResponseWriter, r *http.Request) {
-	Section := &entities.Section{}
-	err := json.NewDecoder(r.Body).Decode(Section)
+var MaterialCreate = func(w http.ResponseWriter, r *http.Request) {
+	Material := &entities.Material{}
+	err := json.NewDecoder(r.Body).Decode(Material)
 
 	if err != nil {
 		u.HandleBadRequest(w, err)
@@ -20,24 +20,24 @@ var SectionCreate = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db := db.GetDB()
-	err = db.Create(Section).Error
+	err = db.Create(Material).Error
 
 	if err != nil {
 		u.HandleBadRequest(w, err)
 	} else {
-		res, _ := json.Marshal(Section)
+		res, _ := json.Marshal(Material)
 		u.RespondJSON(w, res)
 	}
 }
 
-var SectionRetrieve = func(w http.ResponseWriter, r *http.Request) {
-	Section := &entities.Section{}
+var MaterialRetrieve = func(w http.ResponseWriter, r *http.Request) {
+	Material := &entities.Material{}
 
 	params := mux.Vars(r)
 	id := params["id"]
 
 	db := db.GetDB()
-	err := db.Preload("SectionType").First(&Section, id).Error
+	err := db.First(&Material, id).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -48,7 +48,7 @@ var SectionRetrieve = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := json.Marshal(Section)
+	res, err := json.Marshal(Material)
 	if err != nil {
 		u.HandleBadRequest(w, err)
 	} else {
@@ -56,14 +56,14 @@ var SectionRetrieve = func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var SectionUpdate = func(w http.ResponseWriter, r *http.Request) {
-	Section := &entities.Section{}
+var MaterialUpdate = func(w http.ResponseWriter, r *http.Request) {
+	Material := &entities.Material{}
 
 	params := mux.Vars(r)
 	id := params["id"]
 
 	db := db.GetDB()
-	err := db.First(&Section, id).Error
+	err := db.First(&Material, id).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -74,15 +74,16 @@ var SectionUpdate = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newSection := &entities.Section{}
-	err = json.NewDecoder(r.Body).Decode(newSection)
+	newMaterial := &entities.Material{}
+	err = json.NewDecoder(r.Body).Decode(newMaterial)
 
 	if err != nil {
 		u.HandleBadRequest(w, err)
 		return
 	}
 
-	err = db.Model(&Section).Updates(newSection).Error
+	db.Model(&Material).Update("is_visible", newMaterial.IsVisible)
+	err = db.Model(&Material).Updates(newMaterial).Error
 
 	if err != nil {
 		u.HandleBadRequest(w, err)
@@ -91,12 +92,12 @@ var SectionUpdate = func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-var SectionDelete = func(w http.ResponseWriter, r *http.Request) {
+var MaterialDelete = func(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
 
 	db := db.GetDB()
-	err := db.Delete(&entities.Section{}, id).Error
+	err := db.Delete(&entities.Material{}, id).Error
 
 	if err != nil {
 		u.HandleBadRequest(w, err)

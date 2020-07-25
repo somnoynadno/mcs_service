@@ -2,21 +2,17 @@ package logical
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"mcs_service/db"
 	"mcs_service/models/entities"
 	u "mcs_service/utils"
 	"net/http"
 )
 
-var GetSectionsBySubjectID = func(w http.ResponseWriter, r *http.Request) {
-	var entities []entities.Section
-
-	params := mux.Vars(r)
-	subjectID := params["subject_id"]
+var GetAllSectionTypes = func(w http.ResponseWriter, r *http.Request) {
+	var entities []entities.SectionType
 
 	db := db.GetDB()
-	err := db.Preload("SectionType").Where("subject_id = ?", subjectID).Find(&entities).Error
+	err := db.Find(&entities).Error
 
 	if err != nil {
 		u.HandleBadRequest(w, err)

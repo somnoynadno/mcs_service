@@ -12,6 +12,8 @@ func InitAdminRouter(router *mux.Router) {
 	initSubjectRouter(router)
 	initTaskRouter(router)
 	initTaskTypeRouter(router)
+	initSectionTypeRouter(router)
+	initMaterialRouter(router)
 }
 
 func initSectionRouter(router *mux.Router) {
@@ -45,6 +47,21 @@ func initTaskRouter(router *mux.Router) {
 		logical.GetTasksByTaskTypeID).Methods(http.MethodGet, http.MethodOptions)
 }
 
+func initMaterialRouter(router *mux.Router) {
+	router.HandleFunc("/material",      crud.MaterialCreate).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc("/material/{id}", crud.MaterialRetrieve).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/material/{id}", crud.MaterialUpdate).Methods(http.MethodPut, http.MethodOptions)
+	router.HandleFunc("/material/{id}", crud.MaterialDelete).Methods(http.MethodDelete, http.MethodOptions)
+
+	router.HandleFunc("/materials_by_section/{section_id}",
+		logical.GetMaterialsBySectionID).Methods(http.MethodGet, http.MethodOptions)
+}
+
 func initTaskTypeRouter(router *mux.Router) {
 	router.HandleFunc("/all_task_types", logical.GetAllTaskTypes).Methods(http.MethodGet, http.MethodOptions)
 }
+
+func initSectionTypeRouter(router *mux.Router) {
+	router.HandleFunc("/all_section_types", logical.GetAllSectionTypes).Methods(http.MethodGet, http.MethodOptions)
+}
+

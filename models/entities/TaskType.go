@@ -12,4 +12,5 @@ var DefaultTaskTypes = []string {
 	"task",       // existing task in module
 	"homework",   // task as a homework
 	"rejected",   // declined suggestions
+	"control",    // control tasks
 }

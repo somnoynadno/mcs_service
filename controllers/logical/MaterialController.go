@@ -9,14 +9,14 @@ import (
 	"net/http"
 )
 
-var GetSectionsBySubjectID = func(w http.ResponseWriter, r *http.Request) {
-	var entities []entities.Section
+var GetMaterialsBySectionID = func(w http.ResponseWriter, r *http.Request) {
+	var entities []entities.Material
 
 	params := mux.Vars(r)
-	subjectID := params["subject_id"]
+	sectionID := params["section_id"]
 
 	db := db.GetDB()
-	err := db.Preload("SectionType").Where("subject_id = ?", subjectID).Find(&entities).Error
+	err := db.Where("section_id = ?", sectionID).Find(&entities).Error
 
 	if err != nil {
 		u.HandleBadRequest(w, err)
