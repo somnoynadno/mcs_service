@@ -11,6 +11,7 @@ func InitAdminRouter(router *mux.Router) {
 	initSectionRouter(router)
 	initSubjectRouter(router)
 	initTaskRouter(router)
+	initTaskTypeRouter(router)
 }
 
 func initSectionRouter(router *mux.Router) {
@@ -40,4 +41,10 @@ func initTaskRouter(router *mux.Router) {
 
 	router.HandleFunc("/tasks_by_section/{section_id}",
 		logical.GetTasksBySectionID).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/tasks_by_task_type/{task_type_id}",
+		logical.GetTasksByTaskTypeID).Methods(http.MethodGet, http.MethodOptions)
+}
+
+func initTaskTypeRouter(router *mux.Router) {
+	router.HandleFunc("/all_task_types", logical.GetAllTaskTypes).Methods(http.MethodGet, http.MethodOptions)
 }

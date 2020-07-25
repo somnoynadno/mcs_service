@@ -45,6 +45,7 @@ func migrateSchema() error {
 		entities.Section{},
 		entities.Subject{},
 		entities.Task{},
+		entities.TaskType{},
 		entities.User{},
 		entities.UserRole{},
 	).Error

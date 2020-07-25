@@ -7,4 +7,5 @@ type Subject struct {
 	Name        string     `json:"name"         gorm:"not null"`
 	Description string     `json:"description"`
 	Sections    []*Section `json:"sections,omitempty"`
+	Teachers    *string    `json:"teachers"`
 }

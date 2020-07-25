@@ -37,7 +37,7 @@ var TaskRetrieve = func(w http.ResponseWriter, r *http.Request) {
 	id := params["id"]
 
 	db := db.GetDB()
-	err := db.First(&Task, id).Error
+	err := db.Preload("TaskType").First(&Task, id).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {

@@ -9,7 +9,36 @@ import (
 	"os"
 )
 
-func createDefaultRolesAndEntities() {
+func CreateDefaults() {
+	createDefaultRolesAndUsers()
+	createDefaultTaskTypes()
+}
+
+func createDefaultTaskTypes() {
+	for _, tt := range entities.DefaultTaskTypes {
+		taskType := entities.TaskType{}
+		err := db.GetDB().Where("name = ?", tt).First(&taskType).Error
+
+		if err != nil {
+			if err == gorm.ErrRecordNotFound {
+				taskType.Name = tt
+
+				err := db.GetDB().Create(&taskType).Error
+				if err != nil {
+					panic(err)
+				}
+
+				log.Info("Task type '" + tt + "' created successfully")
+			} else {
+				panic(err)
+			}
+		} else {
+			log.Info("Task type '" + tt + "' already exists")
+		}
+	}
+}
+
+func createDefaultRolesAndUsers() {
 	adminUsername := "admin"
 	adminPassword := os.Getenv("default_admin_password")
 	if adminPassword == "" {
@@ -18,7 +47,7 @@ func createDefaultRolesAndEntities() {
 
 	// creating admin role
 	role := entities.UserRole{}
-	err := db.GetDB().Table("user_roles").Select("name = ?", "admin").First(&role).Error
+	err := db.GetDB().Where("name = ?", "admin").First(&role).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -35,12 +64,12 @@ func createDefaultRolesAndEntities() {
 			panic(err)
 		}
 	} else {
-		log.Info("Admin role already exist")
+		log.Info("Admin role already exists")
 	}
 
 	// creating default admin profile
 	admin := entities.User{}
-	err = db.GetDB().Table("users").Select("username = ?", adminUsername).First(&admin).Error
+	err = db.GetDB().Where("username = ?", adminUsername).First(&admin).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -58,7 +87,7 @@ func createDefaultRolesAndEntities() {
 			panic(err)
 		}
 	} else {
-		log.Info("Default admin profile already exist")
+		log.Info("Default admin profile already exists")
 	}
 }
 

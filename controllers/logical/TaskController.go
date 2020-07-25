@@ -16,7 +16,7 @@ var GetTasksBySectionID = func(w http.ResponseWriter, r *http.Request) {
 	sectionID := params["section_id"]
 
 	db := db.GetDB()
-	err := db.Where("section_id = ?", sectionID).Find(&entities).Error
+	err := db.Preload("TaskType").Where("section_id = ?", sectionID).Find(&entities).Error
 
 	if err != nil {
 		u.HandleBadRequest(w, err)
@@ -31,3 +31,27 @@ var GetTasksBySectionID = func(w http.ResponseWriter, r *http.Request) {
 		u.RespondJSON(w, res)
 	}
 }
+
+var GetTasksByTaskTypeID = func(w http.ResponseWriter, r *http.Request) {
+	var entities []entities.Task
+
+	params := mux.Vars(r)
+	taskTypeID := params["task_type_id"]
+
+	db := db.GetDB()
+	err := db.Preload("TaskType").Where("task_type_id = ?", taskTypeID).Find(&entities).Error
+
+	if err != nil {
+		u.HandleBadRequest(w, err)
+		return
+	}
+
+	res, err := json.Marshal(entities)
+
+	if err != nil {
+		u.HandleBadRequest(w, err)
+	} else {
+		u.RespondJSON(w, res)
+	}
+}
+

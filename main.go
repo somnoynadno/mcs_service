@@ -24,7 +24,7 @@ func main() {
 	}
 
 	// set things up
-	createDefaultRolesAndEntities()
+	CreateDefaults()
 
 	port := os.Getenv("PORT")
 	if port == "" {
