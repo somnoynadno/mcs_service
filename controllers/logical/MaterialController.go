@@ -16,7 +16,7 @@ var GetMaterialsBySectionID = func(w http.ResponseWriter, r *http.Request) {
 	sectionID := params["section_id"]
 
 	db := db.GetDB()
-	err := db.Where("section_id = ?", sectionID).Find(&entities).Error
+	err := db.Order("created_at ASC").Where("section_id = ?", sectionID).Find(&entities).Error
 
 	if err != nil {
 		u.HandleBadRequest(w, err)

@@ -16,7 +16,8 @@ var GetSectionsBySubjectID = func(w http.ResponseWriter, r *http.Request) {
 	subjectID := params["subject_id"]
 
 	db := db.GetDB()
-	err := db.Preload("SectionType").Where("subject_id = ?", subjectID).Find(&entities).Error
+	err := db.Preload("SectionType").Order("created_at ASC").
+		Where("subject_id = ?", subjectID).Find(&entities).Error
 
 	if err != nil {
 		u.HandleBadRequest(w, err)

@@ -12,7 +12,7 @@ var GetAllSubjects = func(w http.ResponseWriter, r *http.Request) {
 	var entities []entities.Subject
 
 	db := db.GetDB()
-	err := db.Find(&entities).Error
+	err := db.Order("created_at ASC").Find(&entities).Error
 
 	if err != nil {
 		u.HandleBadRequest(w, err)
