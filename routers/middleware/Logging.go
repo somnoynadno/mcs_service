@@ -30,7 +30,9 @@ var LogBody = func(next http.Handler) http.Handler {
 
 var LogPath = func(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Info(fmt.Sprintf("Request from %s on %s with %s method", r.Host, r.RequestURI, r.Method))
+		// depends on nginx X-Real-IP proxy header
+		log.Info(fmt.Sprintf("Request from %s (%s) on %s with %s method",
+			r.Header.Get("X-Real-IP"), r.Host, r.RequestURI, r.Method))
 		next.ServeHTTP(w, r)
 	})
 }

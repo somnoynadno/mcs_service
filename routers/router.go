@@ -15,10 +15,13 @@ func InitRouter() *mux.Router {
 	// Logical API subrouters
 	authRouter := api.PathPrefix("/auth").Subrouter()
 	adminRouter := api.PathPrefix("/admin").Subrouter()
+	statsRouter := api.PathPrefix("/stats").Subrouter()
 	// Handle auth
 	API.InitAuthRouter(authRouter)
 	// Admin routing
 	API.InitAdminRouter(adminRouter)
+	// Statistics routing
+	API.InitStatsRouter(statsRouter)
 	// Service command
 	api.HandleFunc("/ping", u.HandleOptions).Methods(http.MethodGet)
 
