@@ -11,7 +11,7 @@ var DefaultTaskTypes = []string {
 	"suggestion", // new task suggestion
 	"task",       // existing task in module
 	"homework",   // task as a homework
-	"rejected",   // declined suggestions
 	"additional", // additional tasks
 	"control",    // control tasks
+	"rejected",   // declined suggestions
 }

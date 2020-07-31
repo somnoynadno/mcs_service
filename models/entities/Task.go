@@ -16,4 +16,5 @@ type Task struct {
 	Section        *Section  `json:"section,omitempty"`
 	TaskTypeID     uint      `json:"task_type_id"`
 	TaskType       *TaskType `json:"task_type,omitempty"`
+	Notes          *string   `json:"notes"`
 }
