@@ -17,4 +17,14 @@ type Task struct {
 	TaskTypeID     uint      `json:"task_type_id"`
 	TaskType       *TaskType `json:"task_type,omitempty"`
 	Notes          *string   `json:"notes"`
+	LessonID       *uint     `json:"lesson_id"`
+	Lesson         *Lesson   `json:"lesson,omitempty"`
+}
+
+type TaskForStudents struct {
+	auxiliary.BaseModelIgnore
+	Name           string    `json:"name"`
+	Description    string    `json:"description"`
+	Difficulty     *int      `json:"difficulty"`
+	LessonID       *uint     `json:"lesson_id"`
 }

@@ -42,6 +42,8 @@ func GetDB() *gorm.DB {
 
 func migrateSchema() error {
 	err := db.AutoMigrate(
+		entities.Lesson{},
+		entities.LessonType{},
 		entities.Material{},
 		entities.Section{},
 		entities.SectionType{},

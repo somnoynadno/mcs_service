@@ -8,4 +8,5 @@ type Subject struct {
 	Description string     `json:"description"`
 	Sections    []*Section `json:"sections,omitempty"`
 	Teachers    *string    `json:"teachers"`
+	// TODO: Rules       string     `json:"rules"`
 }
