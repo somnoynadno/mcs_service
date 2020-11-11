@@ -8,12 +8,20 @@ import (
 )
 
 func InitAdminRouter(router *mux.Router) {
+	initLessonRouter(router)
 	initSectionRouter(router)
 	initSubjectRouter(router)
 	initTaskRouter(router)
 	initTaskTypeRouter(router)
 	initSectionTypeRouter(router)
 	initMaterialRouter(router)
+}
+
+func initLessonRouter(router *mux.Router) {
+	router.HandleFunc("/lesson",      crud.LessonCreate).Methods(http.MethodPost, http.MethodOptions)
+	router.HandleFunc("/lesson/{id}", crud.LessonRetrieve).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/lesson/{id}", crud.LessonUpdate).Methods(http.MethodPut, http.MethodOptions)
+	router.HandleFunc("/lesson/{id}", crud.LessonDelete).Methods(http.MethodDelete, http.MethodOptions)
 }
 
 func initSectionRouter(router *mux.Router) {
@@ -55,6 +63,10 @@ func initMaterialRouter(router *mux.Router) {
 
 	router.HandleFunc("/materials_by_section/{section_id}",
 		logical.GetMaterialsBySectionID).Methods(http.MethodGet, http.MethodOptions)
+}
+
+func initLessonTypeRouter(router *mux.Router) {
+	router.HandleFunc("/all_lesson_types", logical.GetAllLessonTypes).Methods(http.MethodGet, http.MethodOptions)
 }
 
 func initTaskTypeRouter(router *mux.Router) {

@@ -30,7 +30,7 @@ func init() {
 
 	err = migrateSchema()
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	} else {
 		log.Info("Schema migrated successfully")
 	}
@@ -42,11 +42,14 @@ func GetDB() *gorm.DB {
 
 func migrateSchema() error {
 	err := db.AutoMigrate(
+		entities.Lesson{},
+		entities.LessonType{},
 		entities.Material{},
 		entities.Section{},
 		entities.SectionType{},
 		entities.Subject{},
 		entities.Task{},
+		entities.TaskLesson{},
 		entities.TaskType{},
 		entities.User{},
 		entities.UserRole{},

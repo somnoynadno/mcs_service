@@ -13,6 +13,7 @@ func CreateDefaults() {
 	createDefaultRolesAndUsers()
 	createDefaultTaskTypes()
 	createDefaultSectionTypes()
+	createDefaultLessonTypes()
 }
 
 func createDefaultSectionTypes() {
@@ -59,6 +60,30 @@ func createDefaultTaskTypes() {
 			}
 		} else {
 			log.Info("Task type '" + tt + "' already exists")
+		}
+	}
+}
+
+func createDefaultLessonTypes() {
+	for _, lt := range entities.DefaultLessonTypes {
+		lessonType := entities.LessonType{}
+		err := db.GetDB().Where("name = ?", lt).First(&lessonType).Error
+
+		if err != nil {
+			if err == gorm.ErrRecordNotFound {
+				lessonType.Name = lt
+
+				err := db.GetDB().Create(&lessonType).Error
+				if err != nil {
+					panic(err)
+				}
+
+				log.Info("Lesson type '" + lt + "' created successfully")
+			} else {
+				panic(err)
+			}
+		} else {
+			log.Info("Lesson type '" + lt + "' already exists")
 		}
 	}
 }

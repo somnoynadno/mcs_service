@@ -17,4 +17,5 @@ type Task struct {
 	TaskTypeID     uint      `json:"task_type_id"`
 	TaskType       *TaskType `json:"task_type,omitempty"`
 	Notes          *string   `json:"notes"`
+	Lessons        []*Lesson `json:"lessons,omitempty" gorm:"many2many:task_lessons;"`
 }
