@@ -27,12 +27,12 @@ func createDefaultSectionTypes() {
 
 				err := db.GetDB().Create(&sectionType).Error
 				if err != nil {
-					panic(err)
+					log.Fatal(err)
 				}
 
 				log.Info("Section type '" + st + "' created successfully")
 			} else {
-				panic(err)
+				log.Fatal(err)
 			}
 		} else {
 			log.Info("Section type '" + st + "' already exists")
@@ -51,12 +51,12 @@ func createDefaultTaskTypes() {
 
 				err := db.GetDB().Create(&taskType).Error
 				if err != nil {
-					panic(err)
+					log.Fatal(err)
 				}
 
 				log.Info("Task type '" + tt + "' created successfully")
 			} else {
-				panic(err)
+				log.Fatal(err)
 			}
 		} else {
 			log.Info("Task type '" + tt + "' already exists")
@@ -75,12 +75,12 @@ func createDefaultLessonTypes() {
 
 				err := db.GetDB().Create(&lessonType).Error
 				if err != nil {
-					panic(err)
+					log.Fatal(err)
 				}
 
 				log.Info("Lesson type '" + lt + "' created successfully")
 			} else {
-				panic(err)
+				log.Fatal(err)
 			}
 		} else {
 			log.Info("Lesson type '" + lt + "' already exists")
@@ -92,7 +92,7 @@ func createDefaultRolesAndUsers() {
 	adminUsername := "admin"
 	adminPassword := os.Getenv("default_admin_password")
 	if adminPassword == "" {
-		panic("no default_admin_password specified")
+		log.Fatal("no default_admin_password specified")
 	}
 
 	// creating admin role
@@ -106,12 +106,12 @@ func createDefaultRolesAndUsers() {
 
 			err := db.GetDB().Create(&role).Error
 			if err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
 
 			log.Info("Admin role created successfully")
 		} else {
-			panic(err)
+			log.Fatal(err)
 		}
 	} else {
 		log.Info("Admin role already exists")
@@ -129,12 +129,12 @@ func createDefaultRolesAndUsers() {
 
 			err := db.GetDB().Create(&admin).Error
 			if err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
 
 			log.Info("Default admin profile created successfully")
 		} else {
-			panic(err)
+			log.Fatal(err)
 		}
 	} else {
 		log.Info("Default admin profile already exists")
