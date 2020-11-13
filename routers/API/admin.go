@@ -15,6 +15,8 @@ func InitAdminRouter(router *mux.Router) {
 	initTaskTypeRouter(router)
 	initSectionTypeRouter(router)
 	initMaterialRouter(router)
+	initLessonTypeRouter(router)
+	initTaskLessonRouter(router)
 }
 
 func initLessonRouter(router *mux.Router) {
@@ -22,6 +24,9 @@ func initLessonRouter(router *mux.Router) {
 	router.HandleFunc("/lesson/{id}", crud.LessonRetrieve).Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/lesson/{id}", crud.LessonUpdate).Methods(http.MethodPut, http.MethodOptions)
 	router.HandleFunc("/lesson/{id}", crud.LessonDelete).Methods(http.MethodDelete, http.MethodOptions)
+
+	router.HandleFunc("/lessons_by_subject/{subject_id}",
+		logical.GetLessonsBySubjectID).Methods(http.MethodGet, http.MethodOptions)
 }
 
 func initSectionRouter(router *mux.Router) {
@@ -51,6 +56,8 @@ func initTaskRouter(router *mux.Router) {
 
 	router.HandleFunc("/tasks_by_section/{section_id}",
 		logical.GetTasksBySectionID).Methods(http.MethodGet, http.MethodOptions)
+	router.HandleFunc("/tasks_by_subject/{subject_id}",
+		logical.GetTasksBySubjectID).Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/tasks_by_task_type/{task_type_id}",
 		logical.GetTasksByTaskTypeID).Methods(http.MethodGet, http.MethodOptions)
 }
@@ -75,5 +82,10 @@ func initTaskTypeRouter(router *mux.Router) {
 
 func initSectionTypeRouter(router *mux.Router) {
 	router.HandleFunc("/all_section_types", logical.GetAllSectionTypes).Methods(http.MethodGet, http.MethodOptions)
+}
+
+func initTaskLessonRouter(router *mux.Router) {
+	router.HandleFunc("/task_lesson",
+		logical.AddTasksToLesson).Methods(http.MethodPost, http.MethodOptions)
 }
 

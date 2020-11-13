@@ -37,7 +37,7 @@ var LessonRetrieve = func(w http.ResponseWriter, r *http.Request) {
 	id := params["id"]
 
 	db := db.GetDB()
-	err := db.Preload("LessonType").First(&Lesson, id).Error
+	err := db.Preload("LessonType").Preload("Subject").Preload("Tasks").First(&Lesson, id).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
