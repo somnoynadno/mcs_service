@@ -1,8 +1,10 @@
 # Building enviroment
 FROM golang:alpine as builder
 LABEL maintainer="Alexander Zorkin"
-# Git required for fetch dependenciesd
-RUN apk update && apk add --no-cache git gcc libc-dev
+# Git required for fetch dependencies
+RUN echo http://mirror.yandex.ru/mirrors/alpine/v3.5/main > /etc/apk/repositories; \
+    echo http://mirror.yandex.ru/mirrors/alpine/v3.5/community >> /etc/apk/repositories; \
+    apk update && apk add --no-cache git gcc libc-dev util-linux
 WORKDIR /app
 # Go mod required for faster build your application
 COPY go.mod go.sum ./
