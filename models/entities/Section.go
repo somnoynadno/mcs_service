@@ -6,6 +6,7 @@ type Section struct {
 	auxiliary.BaseModel
 	Name          string       `json:"name"                   gorm:"not null"`
 	Description   string       `json:"description"`
+	Password      *string      `json:"password,omitempty"`
 	SubjectID     uint         `json:"subject_id"`
 	Subject       *Subject     `json:"subject,omitempty"`
 	Tasks         []*Task      `json:"tasks,omitempty"`

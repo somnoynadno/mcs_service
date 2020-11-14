@@ -40,9 +40,9 @@ var GetTasksBySubjectID = func(w http.ResponseWriter, r *http.Request) {
 	subjectID := params["subject_id"]
 
 	db := db.GetDB()
-	err := db.Preload("TaskType").Joins("JOIN sections ON sections.id = tasks.section_id").
-		Order("created_at ASC").Where("sections.subject_id = ?", subjectID).
-		Find(&entities).Error
+	err := db.Joins("JOIN sections ON sections.id = tasks.section_id").
+		Preload("Section").Where("sections.subject_id = ?", subjectID).
+		Order("section_id asc").Find(&entities).Error
 
 	if err != nil {
 		u.HandleBadRequest(w, err)

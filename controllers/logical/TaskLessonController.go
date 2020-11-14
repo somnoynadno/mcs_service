@@ -18,12 +18,19 @@ var AddTasksToLesson = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db := db.GetDB()
-	err = db.Create(&TaskLessons).Error
+	tx := db.Begin()
 
-	if err != nil {
-		u.HandleBadRequest(w, err)
-	} else {
-		res, _ := json.Marshal(&TaskLessons)
-		u.RespondJSON(w, res)
+	for i, _ := range TaskLessons {
+		err = tx.Create(&TaskLessons[i]).Error
+
+		if err != nil {
+			tx.Rollback()
+			u.HandleInternalError(w, err)
+			return
+		}
 	}
+
+	tx.Commit()
+	res, _ := json.Marshal(&TaskLessons)
+	u.RespondJSON(w, res)
 }

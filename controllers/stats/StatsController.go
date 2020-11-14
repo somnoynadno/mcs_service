@@ -21,10 +21,10 @@ var GetEntityCount = func(w http.ResponseWriter, r *http.Request) {
 	var lessonsCount uint
 
 	db := db.GetDB()
-	db.Table("tasks").Count(&tasksCount)
-	db.Table("materials").Count(&materialsCount)
-	db.Table("sections").Count(&sectionsCount)
-	db.Table("lessons").Count(&lessonsCount)
+	db.Table("tasks").Where("deleted_at is null").Count(&tasksCount)
+	db.Table("materials").Where("deleted_at is null").Count(&materialsCount)
+	db.Table("sections").Where("deleted_at is null").Count(&sectionsCount)
+	db.Table("lessons").Where("deleted_at is null").Count(&lessonsCount)
 
 	response := EntityCountsResponse{
 		TasksCount: tasksCount,
