@@ -2,9 +2,12 @@ package middleware
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
+	"mcs_service/db"
+	"mcs_service/models/entities"
 	"net/http"
 )
 
@@ -33,7 +36,30 @@ var LogPath = func(next http.Handler) http.Handler {
 		if r.Method != http.MethodOptions {
 			IP := r.Header.Get("X-Real-IP") // depends on nginx
 			log.Info(fmt.Sprintf("%s: %s %s (%s)", IP, r.Method, r.RequestURI, r.Host))
+			go saveRequest(r)
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+func saveRequest(r *http.Request) {
+	h, err := json.Marshal(r.Header)
+	if err != nil{
+		log.Error(err)
+		return
+	}
+
+	sl := entities.ServiceLogs{
+		URL: r.RequestURI,
+		RealIP: r.Header.Get("X-Real-IP"),
+		UserAgent: r.Header.Get("User-Agent"),
+		Method: r.Method,
+		Headers: string(h),
+	}
+
+	DB := db.GetDB()
+	err = DB.Create(&sl).Error
+	if err != nil {
+		log.Error(err)
+	}
 }

@@ -10,20 +10,23 @@ import (
 
 func InitRouter() *mux.Router {
 	router := mux.NewRouter()
-	// Main API subrouters
+
+	// Main API routers
 	api := router.PathPrefix("/api").Subrouter()
+
 	// Logical API subrouters
 	authRouter := api.PathPrefix("/auth").Subrouter()
 	adminRouter := api.PathPrefix("/admin").Subrouter()
+	studentRouter := api.PathPrefix("/student").Subrouter()
 	statsRouter := api.PathPrefix("/stats").Subrouter()
-	// Handle auth
+
 	API.InitAuthRouter(authRouter)
-	// Admin routing
 	API.InitAdminRouter(adminRouter)
-	// Statistics routing
+	API.InitStudentRouter(studentRouter)
 	API.InitStatsRouter(statsRouter)
+
 	// Service command
-	api.HandleFunc("/ping", u.HandleOptions).Methods(http.MethodGet)
+	api.HandleFunc("/ping", u.HandleOptions).Methods(http.MethodGet, http.MethodPost, http.MethodOptions)
 
 	// Router middleware usage
 	// P.S. Do NOT modify the order

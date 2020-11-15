@@ -14,3 +14,13 @@ type Section struct {
 	SectionType   *SectionType `json:"section_type,omitempty"`
 	Materials     []*Material  `json:"materials,omitempty"`
 }
+
+type SectionForStudent struct {
+	auxiliary.BaseModel
+	Name          string       `json:"name"                   gorm:"not null"`
+	Description   string       `json:"description"`
+	SubjectID     uint         `json:"subject_id"`
+	Subject       *Subject     `json:"subject,omitempty"`
+	SectionTypeID uint         `json:"section_type_id"`
+	SectionType   *SectionType `json:"section_type,omitempty"`
+}

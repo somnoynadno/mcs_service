@@ -47,6 +47,7 @@ func migrateSchema() error {
 		entities.Material{},
 		entities.Section{},
 		entities.SectionType{},
+		entities.ServiceLogs{},
 		entities.Subject{},
 		entities.Task{},
 		entities.TaskLesson{},

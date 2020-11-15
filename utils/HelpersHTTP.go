@@ -18,6 +18,6 @@ func RespondJSON(w http.ResponseWriter, data []byte) {
 }
 
 var HandleOptions = func(w http.ResponseWriter, r *http.Request) {
-	// nothing to say
 	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte("pong"))
 }
