@@ -32,3 +32,23 @@ var GetSectionsBySubjectID = func(w http.ResponseWriter, r *http.Request) {
 		u.RespondJSON(w, res)
 	}
 }
+
+var GetAllSections = func(w http.ResponseWriter, r *http.Request) {
+	var entities []entities.Section
+
+	db := db.GetDB()
+	err := db.Preload("SectionType").Order("created_at ASC").Find(&entities).Error
+
+	if err != nil {
+		u.HandleBadRequest(w, err)
+		return
+	}
+
+	res, err := json.Marshal(entities)
+
+	if err != nil {
+		u.HandleBadRequest(w, err)
+	} else {
+		u.RespondJSON(w, res)
+	}
+}
