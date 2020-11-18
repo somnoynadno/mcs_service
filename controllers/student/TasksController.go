@@ -1,10 +1,11 @@
 package student
 
 import (
+	"crypto/aes"
 	"encoding/json"
-	"errors"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	log "github.com/sirupsen/logrus"
 	"mcs_service/db"
 	"mcs_service/models/entities"
 	u "mcs_service/utils"
@@ -14,13 +15,6 @@ import (
 var GetTasksBySectionID = func(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	sectionID := params["section_id"]
-
-	password := r.FormValue("password")
-	if password == "" {
-		u.HandleBadRequest(w, errors.New("no password provided"))
-		return
-	}
-
 	db := db.GetDB()
 
 	section := entities.Section{}
@@ -32,11 +26,6 @@ var GetTasksBySectionID = func(w http.ResponseWriter, r *http.Request) {
 		} else {
 			u.HandleInternalError(w, err)
 		}
-		return
-	}
-
-	if section.Password != nil && *section.Password != password {
-		u.HandleForbidden(w, errors.New("wrong password"))
 		return
 	}
 
@@ -53,6 +42,11 @@ var GetTasksBySectionID = func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		u.HandleInternalError(w, err)
 	} else {
-		u.RespondJSON(w, res)
+		iv := "0000000000000000"
+		key := u.PadKey(*section.Password, 32, "0")
+		encrypted := u.AES256(string(res), key, iv, aes.BlockSize)
+
+		log.Debug("section encrypted with key " + key + " and IV " + iv)
+		u.Respond(w, u.Message(true, encrypted))
 	}
 }

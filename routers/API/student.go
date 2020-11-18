@@ -16,6 +16,6 @@ func InitStudentRouter(router *mux.Router) {
 	router.HandleFunc("/materials_by_section/{section_id}",
 		logical.GetMaterialsBySectionID).Methods(http.MethodGet, http.MethodOptions)
 
-	router.HandleFunc("/tasks_by_section/{section_id}",
+	router.HandleFunc("/encrypted_tasks_by_section/{section_id}",
 		student.GetTasksBySectionID).Methods(http.MethodGet, http.MethodOptions)
 }
