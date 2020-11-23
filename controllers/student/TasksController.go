@@ -106,3 +106,41 @@ var GetTasksBySectionID = func(w http.ResponseWriter, r *http.Request) {
 		u.RespondJSON(w, res)
 	}
 }
+
+var GetAllTasks = func(w http.ResponseWriter, r *http.Request) {
+	var entities []entities.TaskForStudent
+
+	db := db.GetDB()
+	err := db.Table("tasks").Preload("TaskType").Preload("Section").Find(&entities).Error
+
+	if err != nil {
+		u.HandleInternalError(w, err)
+		return
+	}
+
+	for i, v := range entities {
+		password := v.Section.Password
+		if password == nil {
+			log.Debug("no password for section provided")
+			p := ""
+			password = &p
+		}
+
+		iv := "0000000000000000"
+		key := u.PadKey(*password, 32, "0")
+
+		d := v.Description
+		encrypted := u.AES256(d, key, iv, aes.BlockSize)
+
+		entities[i].Description = encrypted
+		entities[i].Section = nil // hide section
+	}
+
+	log.Debug("descriptions encrypted successfully")
+	res, err := json.Marshal(entities)
+	if err != nil {
+		u.HandleInternalError(w, err)
+	} else {
+		u.RespondJSON(w, res)
+	}
+}
