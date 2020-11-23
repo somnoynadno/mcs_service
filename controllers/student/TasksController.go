@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-var GetTasksBySectionID = func(w http.ResponseWriter, r *http.Request) {
+var GetEncryptedTasksBySectionID = func(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	sectionID := params["section_id"]
 	db := db.GetDB()
@@ -42,11 +42,67 @@ var GetTasksBySectionID = func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		u.HandleInternalError(w, err)
 	} else {
+		if section.Password == nil {
+			log.Info("no password for section provided")
+			p := ""
+			section.Password = &p
+		}
+
 		iv := "0000000000000000"
 		key := u.PadKey(*section.Password, 32, "0")
 		encrypted := u.AES256(string(res), key, iv, aes.BlockSize)
 
 		log.Debug("section encrypted with key " + key + " and IV " + iv)
 		u.Respond(w, u.Message(true, encrypted))
+	}
+}
+
+var GetTasksBySectionID = func(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	sectionID := params["section_id"]
+	db := db.GetDB()
+
+	section := entities.Section{}
+	err := db.First(&section, sectionID).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			u.HandleNotFound(w)
+		} else {
+			u.HandleInternalError(w, err)
+		}
+		return
+	}
+
+	var entities []entities.TaskForStudent
+	err = db.Table("tasks").Preload("TaskType").Order("created_at ASC").
+		Where("section_id = ?", sectionID).Find(&entities).Error
+
+	if err != nil {
+		u.HandleInternalError(w, err)
+		return
+	}
+
+	if section.Password == nil {
+		log.Info("no password for section provided")
+		p := ""
+		section.Password = &p
+	}
+
+	iv := "0000000000000000"
+	key := u.PadKey(*section.Password, 32, "0")
+
+	for i, v := range entities {
+		d := v.Description
+		encrypted := u.AES256(d, key, iv, aes.BlockSize)
+		entities[i].Description = encrypted
+	}
+	log.Debug("descriptions encrypted with key " + key + " and IV " + iv)
+
+	res, err := json.Marshal(entities)
+	if err != nil {
+		u.HandleInternalError(w, err)
+	} else {
+		u.RespondJSON(w, res)
 	}
 }
