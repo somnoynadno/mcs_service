@@ -3,7 +3,7 @@ package auxiliary
 import "time"
 
 /*
- Base GORM models
+ Base GORM trading
  */
 type BaseModel struct {
 	ID        uint       `json:"id" gorm:"primary_key"`

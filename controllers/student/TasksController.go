@@ -50,10 +50,14 @@ var GetEncryptedTasksBySectionID = func(w http.ResponseWriter, r *http.Request) 
 
 		iv := "0000000000000000"
 		key := u.PadKey(*section.Password, 32, "0")
-		encrypted := u.AES256(string(res), key, iv, aes.BlockSize)
+		encrypted, err := u.AES256(string(res), key, iv, aes.BlockSize)
 
-		log.Debug("section encrypted with key " + key + " and IV " + iv)
-		u.Respond(w, u.Message(true, encrypted))
+		if err != nil {
+			u.HandleInternalError(w, err)
+		} else {
+			log.Debug("section encrypted with key " + key + " and IV " + iv)
+			u.Respond(w, u.Message(true, encrypted))
+		}
 	}
 }
 
@@ -94,7 +98,12 @@ var GetTasksBySectionID = func(w http.ResponseWriter, r *http.Request) {
 
 	for i, v := range entities {
 		d := v.Description
-		encrypted := u.AES256(d, key, iv, aes.BlockSize)
+		encrypted, err := u.AES256(d, key, iv, aes.BlockSize)
+		if err != nil {
+			u.HandleInternalError(w, err)
+			return
+		}
+
 		entities[i].Description = encrypted
 	}
 	log.Debug("descriptions encrypted with key " + key + " and IV " + iv)
@@ -130,7 +139,11 @@ var GetAllTasks = func(w http.ResponseWriter, r *http.Request) {
 		key := u.PadKey(*password, 32, "0")
 
 		d := v.Description
-		encrypted := u.AES256(d, key, iv, aes.BlockSize)
+		encrypted, err := u.AES256(d, key, iv, aes.BlockSize)
+		if err != nil {
+			u.HandleInternalError(w, err)
+			return
+		}
 
 		entities[i].Description = encrypted
 		entities[i].Section = nil // hide section
